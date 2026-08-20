@@ -12,11 +12,25 @@ interface Props {
   links: NavItem[];
   ctaLabel?: string;
   showThemeToggle?: boolean;
+  /** brand: solid green header (colour-scheme experiment). Default neutral. */
+  tone?: "surface" | "brand";
 }
-const { links, ctaLabel = "Get access", showThemeToggle = false } = Astro.props;
+const {
+  links,
+  ctaLabel = "Get access",
+  showThemeToggle = false,
+  tone = "surface",
+} = Astro.props;
+const isBrand = tone === "brand";
 ---
 
-<header class="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur">
+<header
+  class={
+    isBrand
+      ? "sticky top-0 z-40 border-b border-white/10 bg-brand-500/95 backdrop-blur"
+      : "sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur"
+  }
+>
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
     <Logo />
 
@@ -24,7 +38,7 @@ const { links, ctaLabel = "Get access", showThemeToggle = false } = Astro.props;
     <nav class="hidden items-center gap-8 lg:flex">
       {
         links.map((l) => (
-          <TextLink href={l.href} class="text-sm font-medium">
+          <TextLink href={l.href} class="text-sm font-medium" light={isBrand}>
             {l.label}
           </TextLink>
         ))
@@ -35,13 +49,13 @@ const { links, ctaLabel = "Get access", showThemeToggle = false } = Astro.props;
       {showThemeToggle && <ThemeToggle />}
 
       <div class="hidden lg:block">
-        <CtaButton label={ctaLabel} size="md" />
+        <CtaButton label={ctaLabel} size="md" variant={isBrand ? "outline" : "solid"} />
       </div>
 
       <!-- Mobile hamburger -->
       <button
         type="button"
-        class="-mr-1 p-1 text-ink lg:hidden"
+        class={`-mr-1 p-1 lg:hidden ${isBrand ? "text-white" : "text-ink"}`}
         aria-label="Open menu"
         aria-expanded="false"
         data-nav-toggle
@@ -64,13 +78,24 @@ const { links, ctaLabel = "Get access", showThemeToggle = false } = Astro.props;
   </div>
 
   <!-- Mobile menu -->
-  <div class="hidden border-t border-line bg-surface lg:hidden" data-nav-menu>
+  <div
+    class={
+      isBrand
+        ? "hidden border-t border-white/10 bg-brand-500 lg:hidden"
+        : "hidden border-t border-line bg-surface lg:hidden"
+    }
+    data-nav-menu
+  >
     <nav class="mx-auto flex max-w-6xl flex-col px-6 py-3">
       {
         links.map((l) => (
           <a
             href={l.href}
-            class="rounded-lg px-2 py-3 text-base font-medium text-ink active:bg-surface-2"
+            class={
+              isBrand
+                ? "rounded-lg px-2 py-3 text-base font-medium text-white active:bg-white/10"
+                : "rounded-lg px-2 py-3 text-base font-medium text-ink active:bg-surface-2"
+            }
             data-nav-link
           >
             {l.label}
@@ -78,7 +103,7 @@ const { links, ctaLabel = "Get access", showThemeToggle = false } = Astro.props;
         ))
       }
       <div class="mt-2">
-        <CtaButton label={ctaLabel} class="w-full" />
+        <CtaButton label={ctaLabel} class="w-full" variant={isBrand ? "outline" : "solid"} />
       </div>
     </nav>
   </div>

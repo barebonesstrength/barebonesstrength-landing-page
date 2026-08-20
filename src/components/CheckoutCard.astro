@@ -38,6 +38,11 @@ interface Props {
   options?: PaymentOption[];
   membership?: Membership;
   badges?: string[];
+  /** Outer section background. brand/cream also flip the inner box to a
+   * cream panel (matching the rest of the page's "flip to the opposite
+   * brand colour" pattern) instead of the default near-black panel, so
+   * there's no black left in the section. */
+  tone?: "surface" | "brand" | "cream";
 }
 
 const {
@@ -51,31 +56,52 @@ const {
   options = [],
   membership,
   badges = [],
+  tone = "surface",
 } = Astro.props;
 
 const featured = options.find((o) => o.featured) ?? options[0];
 const monthlyHref = membership?.monthly.href ?? site.checkoutUrl;
 const annualHref = membership?.annual.href ?? site.checkoutUrl;
+
+const isBrand = tone === "brand";
+const isCream = tone === "cream";
+const isFlipped = isBrand || isCream; // both flip the inner box to cream
+const sectionBg = isBrand ? "bg-brand-500" : isCream ? "bg-secondary" : "";
+const eyebrowText = isBrand ? "text-white/80" : isCream ? "text-brand-700" : "text-brand-600";
+const titleText = isBrand ? "text-white" : isCream ? "text-ink-fixed" : "text-ink";
+
+const boxBg = isFlipped ? "bg-secondary" : "bg-surface-dark";
+const boxBorder = isFlipped ? "border border-ink-fixed/12" : "";
+const boxText = isFlipped ? "text-ink-fixed" : "text-ink-dark";
+const boxMuted60 = isFlipped ? "text-ink-fixed/60" : "text-ink-dark/60";
+const boxMuted40 = isFlipped ? "text-ink-fixed/40" : "text-ink-dark/40";
+const boxAccent = isFlipped ? "text-brand-700" : "text-brand-400";
+const boxDivide = isFlipped ? "divide-ink-fixed/12" : "divide-white/10";
+const boxRule = isFlipped ? "border-ink-fixed/15" : "border-white/15";
+const boxOptionBorder = isFlipped ? "border-ink-fixed/20 hover:border-ink-fixed/40" : "border-white/25 hover:border-white/50";
 ---
 
-<section class="mx-auto max-w-3xl px-6 py-16 md:py-20" id="checkout">
-  <p class="text-xs font-bold uppercase tracking-wide text-brand-600">{eyebrow}</p>
-  <h2
-    class="mt-3 text-3xl font-bold tracking-tight text-ink md:text-4xl"
-    set:html={title}
-  />
+<section class={sectionBg} id="checkout">
+  <div class="mx-auto max-w-3xl px-6 py-16 md:py-20">
+  <div class="text-center">
+    <p class={`text-xs font-bold uppercase tracking-wide ${eyebrowText}`}>{eyebrow}</p>
+    <h2
+      class={`mt-3 text-3xl font-bold tracking-tight md:text-4xl ${titleText}`}
+      set:html={title}
+    />
+  </div>
 
-  <div class="mt-8 rounded-card bg-surface-dark p-6 text-ink-dark md:p-8">
+  <div class={`mt-8 rounded-card ${boxBg} ${boxBorder} p-6 ${boxText} md:p-8`}>
     <!-- What you get -->
-    <p class="text-xs font-semibold uppercase tracking-wide text-brand-400">
+    <p class={`text-xs font-semibold uppercase tracking-wide ${boxAccent}`}>
       What you get
     </p>
-    <ul class="mt-3 divide-y divide-white/10">
+    <ul class={`mt-3 divide-y ${boxDivide}`}>
       {
         deliverables.map((d) => (
           <li class="flex items-center justify-between gap-4 py-2.5 text-sm">
             <span>{d.label}</span>
-            <span class="shrink-0 font-medium text-ink-dark/60">{d.value}</span>
+            <span class={`shrink-0 font-medium ${boxMuted60}`}>{d.value}</span>
           </li>
         ))
       }
@@ -84,14 +110,14 @@ const annualHref = membership?.annual.href ?? site.checkoutUrl;
     {
       bonuses.length > 0 && (
         <>
-          <p class="mt-6 text-xs font-semibold uppercase tracking-wide text-brand-400">
+          <p class={`mt-6 text-xs font-semibold uppercase tracking-wide ${boxAccent}`}>
             Bonuses
           </p>
-          <ul class="mt-3 divide-y divide-white/10">
+          <ul class={`mt-3 divide-y ${boxDivide}`}>
             {bonuses.map((b) => (
               <li class="flex items-center justify-between gap-4 py-2.5 text-sm">
                 <span>{b.label}</span>
-                <span class="shrink-0 font-medium text-brand-400">{b.value}</span>
+                <span class={`shrink-0 font-medium ${boxAccent}`}>{b.value}</span>
               </li>
             ))}
           </ul>
@@ -100,7 +126,7 @@ const annualHref = membership?.annual.href ?? site.checkoutUrl;
     }
 
     <!-- Totals -->
-    <div class="mt-6 border-t border-white/15 pt-5">
+    <div class={`mt-6 border-t ${boxRule} pt-5`}>
       <div class="flex items-center justify-between text-sm">
         <span class="font-semibold uppercase tracking-wide">Total value</span>
         <span class="font-bold">{totalValue}</span>
@@ -122,9 +148,9 @@ const annualHref = membership?.annual.href ?? site.checkoutUrl;
             <div class="mt-3 flex items-end justify-between">
               <div>
                 <span class="text-sm font-semibold uppercase tracking-wide">{priceLabel}</span>
-                {discountNote && <p class="mt-0.5 text-xs text-ink-dark/60">{discountNote}</p>}
+                {discountNote && <p class={`mt-0.5 text-xs ${boxMuted60}`}>{discountNote}</p>}
               </div>
-              <span class="text-4xl font-extrabold leading-none text-brand-400">
+              <span class={`text-4xl font-extrabold leading-none ${boxAccent}`}>
                 {featured.price}
                 {featured.suffix && <span class="text-lg font-bold">{featured.suffix}</span>}
               </span>
@@ -133,7 +159,7 @@ const annualHref = membership?.annual.href ?? site.checkoutUrl;
               {options.map((o, i) => (
                 <>
                   {i > 0 && (
-                    <div class="text-center text-xs font-semibold uppercase tracking-wide text-ink-dark/40">
+                    <div class={`text-center text-xs font-semibold uppercase tracking-wide ${boxMuted40}`}>
                       or
                     </div>
                   )}
@@ -142,12 +168,12 @@ const annualHref = membership?.annual.href ?? site.checkoutUrl;
                     class={`block rounded-control px-6 py-4 text-center transition active:translate-y-px ${
                       o.featured
                         ? "bg-brand-500 text-brand-ink hover:bg-brand-600"
-                        : "border border-white/25 text-ink-dark hover:border-white/50"
+                        : `border ${boxOptionBorder} ${boxText}`
                     }`}
                   >
                     <span class="block text-base font-bold">
-                      {o.label} - {o.price}
-                      {o.suffix ?? ""}
+                      {o.label}
+                      {options.length > 1 && ` - ${o.price}${o.suffix ?? ""}`}
                     </span>
                     {o.note && <span class="mt-0.5 block text-xs opacity-70">{o.note}</span>}
                   </a>
@@ -161,12 +187,13 @@ const annualHref = membership?.annual.href ?? site.checkoutUrl;
 
     {
       badges.length > 0 && (
-        <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-medium uppercase tracking-wide text-ink-dark/50">
+        <div class={`mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-medium uppercase tracking-wide ${boxMuted60}`}>
           {badges.map((b) => (
             <span>{b}</span>
           ))}
         </div>
       )
     }
+  </div>
   </div>
 </section>

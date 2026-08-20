@@ -6,17 +6,20 @@ interface Props {
   href: string;
   class?: string;
   external?: boolean;
+  /** For use on a solid brand-green background (e.g. a green header). */
+  light?: boolean;
   [key: string]: unknown;
 }
 
-const { href, class: cls = "", external, ...rest } = Astro.props;
+const { href, class: cls = "", external, light = false, ...rest } = Astro.props;
 
 const isExternal = external ?? /^https?:\/\//.test(href);
 const target = isExternal ? "_blank" : undefined;
 const rel = isExternal ? "noopener noreferrer" : undefined;
 
-const base =
-  "text-ink-muted underline-offset-4 transition-colors duration-150 ease-out hover:text-ink hover:underline focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2";
+const base = light
+  ? "text-white/75 underline-offset-4 transition-colors duration-150 ease-out hover:text-white hover:underline focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+  : "text-ink-muted underline-offset-4 transition-colors duration-150 ease-out hover:text-ink hover:underline focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2";
 ---
 
 <a href={href} target={target} rel={rel} class={`${base} ${cls}`} {...rest}>

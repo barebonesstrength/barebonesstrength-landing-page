@@ -1,286 +1,330 @@
 ---
 import Base from "../layouts/Base.astro";
 import CtaButton from "../components/CtaButton.astro";
-import CountdownBar from "../components/CountdownBar.tsx";
 import SiteNav from "../components/SiteNav.astro";
 import Hero from "../components/Hero.astro";
 import ProofStrip from "../components/ProofStrip.astro";
 import StudentWins from "../components/StudentWins.astro";
+import PhotoCarousel from "../components/PhotoCarousel.astro";
 import CheckoutCard from "../components/CheckoutCard.astro";
 import Faq from "../components/Faq.astro";
 import StickyCta from "../components/StickyCta.astro";
 import SiteFooter from "../components/SiteFooter.astro";
-import ThemeCustomizer from "../components/ThemeCustomizer.astro";
 
 // ============================================================
-// OFFER LANDING PAGE - demo content sells the Funnel Kit itself.
-// Swap copy for your own offer. ALL visible copy lives in these consts;
-// structure + behaviour below stay as-is.
+// OFFER LANDING PAGE - Barebones Strength 1:1 coaching.
+// Book-a-call funnel: every CTA points at site.checkoutUrl (the Calendly
+// link set in config.ts). No price is shown on the page by design.
 // ============================================================
-
-const closesAt = "2026-12-31T23:59:59";
 
 const navLinks = [
   { label: "How it works", href: "#how" },
   { label: "What's included", href: "#included" },
-  { label: "Pricing", href: "#checkout" },
+  { label: "Book a call", href: "#checkout" },
   { label: "FAQ", href: "#faq" },
 ];
 
 // --- HERO ---
 const heroHeadline =
-  'Simple, AI-powered landing pages that <span class="text-brand-500">actually convert</span>';
+  'Lose 5kg in under 8 weeks, <span class="text-brand-500">without losing your strength in the gym</span>';
 const heroSubheadline =
-  "Build a branded, high-converting landing page in under an hour using Claude and a design system that won't let AI make it ugly. No designer. No developer. No code.";
+  "For people who are already training hard and eating reasonably well, but the effort still isn't showing up in the mirror. A precise, done-for-you system that removes the guesswork, so the work you're already putting in finally pays off.";
+// Not rendered in vsl mode (video takes the spotlight instead) - kept here
+// in case you switch the hero back to "split" or "text" mode later.
 const heroBullets = [
-  "8 conversion-ready templates",
-  "Brand it in one command",
-  "Free hosting on Cloudflare",
-  "Emails flow into your Kit",
+  "A training and nutrition plan built around your life",
+  "Weekly check-ins, so nothing falls through the cracks",
+  "Data you actually understand, not just react to",
+  "Direct access to me between sessions",
 ];
 
 const proofStats = [
-  { value: "8", label: "templates" },
-  { value: "33", label: "components" },
-  { value: "<1 hr", label: "to launch" },
-  { value: "$0", label: "hosting" },
-  { value: "1,000+", label: "creators" },
+  { value: "61kg", label: "most weight lost by a client" },
+  { value: "32.5kg", label: "Peter's own transformation" },
+  { value: "8 wks", label: "to your first 5kg" },
+  { value: "1:1", label: "coaching, not a template" },
+  { value: "0", label: "guesswork" },
 ];
 
 // --- PROBLEM ---
 const problems = [
-  "You ask AI for a landing page and get generic, templated slop.",
-  "A real designer costs thousands and takes weeks.",
-  "Page builders lock you into monthly fees and clunky editors.",
-  "You just want a clean, branded page that converts, fast.",
+  "You're consistent in the gym, eating reasonably well, and still not seeing the number move.",
+  "You've built your program from five different sources, and none of the pieces fit together.",
+  "Every week feels like a guess. You just want to know if what you're doing is actually working.",
+  "You're tired of figuring it out alone, and ready to hand the thinking over to someone else.",
 ];
 
-// --- SOLUTION ---
+// --- SOLUTION (The Barebones Method) ---
 const steps = [
-  { title: "Grab the kit", desc: "Copy the template, open it in Claude. The skill walks you through the rest." },
-  { title: "Brand it in one command", desc: "Run /brand-setup and your colours, fonts, and logo land across the whole kit instantly." },
-  { title: "Build and ship", desc: "Pick a template, fill in your copy with Claude, and publish to free hosting." },
+  { title: "Build the Systems", desc: "We audit your lifestyle and build a training and nutrition plan around your actual life, not an idealised version of it." },
+  { title: "Refine the Process", desc: "Weekly check-ins to see what's working, what isn't, and what needs to change. This is where the real progress happens." },
+  { title: "Build the Momentum", desc: "The plan starts running on its own. You stop trying to be consistent and just become someone who is." },
 ];
 
 // --- STUDENT WINS (rotating, result-led) ---
+// Real client wins - swap in more as you collect them (there are more
+// transformation photos already sitting in public/images/ waiting on quotes).
 const studentWins = [
   {
-    result: "0 → first opt-in page live in 40 minutes",
-    quote: "I'd been putting off my landing page for nine months. Sat down with the kit on a Sunday and had it live before lunch - no designer, no Webflow rabbit hole.",
-    name: "Maya Okafor",
-    meta: "Fitness coach · @mayabuilds",
-    image: "https://i.pravatar.cc/96?img=15",
+    result: "Lost 11kg in 20 weeks, while PRs still climbed",
+    quote: "At first, <strong>I only thought that working with Pete would mean having someone help me with a diet.</strong> However, I can safely say that I have learned more about nutrition and training than I have ever in my 5 or so years of training. Having Pete as my coach changed my perspective on food and the gym, which has ultimately led me to a healthier lifestyle.",
+    name: "George K.",
+    meta: "Client · 20 weeks in",
+    image: "/images/george-k-transformation.jpg",
   },
   {
-    result: "2.3% → 9.1% opt-in rate after the rebuild",
-    quote: "Same traffic, same offer. I just rebuilt the page on the kit and the opt-in rate nearly quadrupled. The structure does the heavy lifting for you.",
-    name: "Devin Rhodes",
-    meta: "Newsletter operator · 11k subs",
-    image: "https://i.pravatar.cc/96?img=33",
+    result: "5kg in 8 weeks, 10kg lost total, and so much more",
+    quote: "Pete's impact on my life can't be understated. He not only pulls through for you as a coach, but as a friend. I've learnt how to stay disciplined (even when motivation severely lacked), how to be more efficient and effective with my training, and how my body works under all circumstances. Pete took the time to understand my mentality and worked with me every step of the way, through the ups and downs of life. A <strong>coach and a friend for life.</strong>",
+    name: "Dom",
+    meta: "Client",
+    image: "/images/dom-transformation.jpg",
   },
   {
-    result: "Shipped 3 client pages in one weekend",
-    quote: "I freelance, and this basically became my whole delivery process. Three branded pages, three happy clients, one weekend. It paid for itself on the first project.",
-    name: "Priya Nair",
-    meta: "Freelance designer · @priyaships",
-    image: "https://i.pravatar.cc/96?img=45",
-  },
-  {
-    result: "First $1,240 from a page I built myself",
-    quote: "I always thought I had to hire someone. Turns out I just needed a system that wouldn't let me make it ugly. Filled my first workshop straight off my own page.",
-    name: "Tomás Herrera",
-    meta: "Music educator · @tomasteaches",
-    image: "https://i.pravatar.cc/96?img=52",
+    result: "13kg lost, and a completely new lifestyle",
+    quote: "Being with Peter for <strong>so many years</strong> has been a massive influence on my day to day life. I struggled with results and motivation before working with Peter, which I only treated training as a hobby or chore. Since then it has become a lifestyle that I wouldn't change. The continuous knowledge and understanding that he has provided has helped me greatly improve my progression and ability to improve. He has given me the help not just within the gym but also the support on life outside the gym. It's been <strong>a journey that I will continue to take</strong> while working with Peter.",
+    name: "Andrew",
+    meta: "Client",
+    image: "/images/andrew-transformation.jpg",
   },
 ];
 
 // --- WHAT YOU GET ---
 const deliverables = [
-  { title: "8 conversion templates", desc: "Lead magnets, sales pages, offer pages, thank-you pages and more - tested structures, ready to fill in.", value: "$1,200" },
-  { title: "The /brand-setup skill", desc: "Your colours, fonts, and logo across the entire kit in one command.", value: "$400" },
-  { title: "The /build-page skill", desc: "Tell Claude what you want and it builds the page in your brand, in minutes.", value: "$800" },
-  { title: "The anti-slop design system", desc: "Tokens and components that keep every page clean and on-brand, no matter how you edit it.", value: "$600" },
-  { title: "Kit + Cloudflare wiring", desc: "Email capture into your list and free, fast hosting, set up out of the box.", value: "$300" },
-  { title: "Lifetime updates", desc: "Every new template and feature, yours forever.", value: "$500" },
+  { title: "A plan built around your life", desc: "Personalised training and nutrition built around your schedule, your preferences, and your goals, not a generic template.", value: "Personalised" },
+  { title: "Weekly check-ins", desc: "Regular review of what's working and what needs to change, so the plan keeps improving instead of guessing.", value: "Every week" },
+  { title: "Direct access between sessions", desc: "Async support so questions get answered before they turn into a dropped week.", value: "1:1" },
+  { title: "Data you actually understand", desc: "Track the numbers that matter and learn what they mean, so a bad reading stops feeling like a verdict.", value: "Included" },
+  { title: "A system for every phase", desc: "Fat loss is the start. What happens after matters just as much, and the plan accounts for that from day one.", value: "3 phases" },
 ];
 
-// --- BONUSES ---
+// --- ALSO INCLUDED ---
 const bonuses = [
-  { n: "Bonus 01", title: "The Copy Vault", sub: "fill-in-the-blank copy for every section", desc: "Proven headlines, hooks, and CTAs you adapt in minutes.", value: "$200" },
-  { n: "Bonus 02", title: "Brand-in-5 Worksheet", sub: "blank to branded, fast", desc: "Pick colours and fonts that actually look good, even if you're not a designer.", value: "$100" },
-  { n: "Bonus 03", title: "Launch Checklist", sub: "nothing slips through the cracks", desc: "Every step from build to live, in order.", value: "$100" },
-  { n: "Bonus 04", title: "Section Swipe File", sub: "never stare at a blank page", desc: "Heroes, offers, FAQs, and proof blocks ready to drop in.", value: "$150" },
+  { n: "01", title: "Full training breakdown", sub: "not just what to do, why it works", desc: "Technique and load explained in plain language, so you're not just following instructions blind.", value: "Normally a separate purchase" },
+  { n: "02", title: "Data literacy, taught", sub: "so a bad day stops feeling like a verdict", desc: "Learn to read your own numbers so a single reading stops derailing your week.", value: "Normally a separate purchase" },
+  { n: "03", title: "The phase 2 and 3 roadmap", sub: "what happens after the fat loss", desc: "A plan for maintaining the result and building on it, not just hitting the 8-week mark and guessing again.", value: "Normally a separate purchase" },
 ];
 const superBonus = {
-  title: "Your AI Brain, plugged in",
-  desc: "Connect your own AI knowledge so every page sounds like you, not a robot.",
-  value: "$500",
+  title: "A direct line to me",
+  desc: "Message support between check-ins when something comes up mid-week, so a bad day doesn't turn into a lost week.",
+  value: "Normally a separate purchase",
 };
-const bonusesTotal = "$1,050";
+const bonusesTotal = "All included, no extra cost";
 
 // --- OUTCOMES ---
 const outcomes = [
-  { before: "Generic AI-slop pages", after: "Clean, branded pages that convert" },
-  { before: "Thousands to a designer", after: "Built it yourself in an afternoon" },
-  { before: "Locked into page-builder fees", after: "Own your pages, host them free" },
-  { before: "Staring at a blank editor", after: "Claude builds it with you" },
+  { before: "Constantly changing your plan and hoping something sticks", after: "One system, refined weekly, that actually compounds" },
+  { before: "Reacting to every number on the scale", after: "Understanding what the data is actually telling you" },
+  { before: "Starting over every Monday", after: "Consistency that doesn't depend on a perfect week" },
+  { before: "Effort with nothing to show for it", after: "A body that finally reflects the work you're putting in" },
 ];
 
 // --- WHO IT'S FOR ---
 const forYou = [
-  "You're a creator or coach who needs landing pages but isn't a designer or dev.",
-  "You use AI but you're sick of pages that look like everyone else's.",
-  "You want to own your pages, not rent a page builder forever.",
-  "You move fast and want something live this week.",
-  "You're comfortable using Claude, or ready to learn.",
+  "You're already training consistently and you're not looking to be talked into showing up.",
+  "You're putting in real effort and it's not matching what you see in the mirror.",
+  "You want someone to tell you plainly what's working, what isn't, and why.",
+  "You're willing to make real adjustments to your training and nutrition for a defined period.",
+  "You'd rather hand the thinking over to someone else and just execute.",
 ];
 const notForYou = [
-  "You want a fully custom, hand-coded site from a developer.",
-  "You'll never open Claude or touch a template.",
-  "You need a complex web app, not a landing page.",
-  "You'd rather pay an agency to do the whole thing.",
-  "You're not willing to write your own copy, even with help.",
+  "You're looking for a plan that requires zero change to how you currently eat or train.",
+  "You're not showing up to the gym yet and need to be talked into consistency first.",
+  "You're chasing rapid transformation with no interest in the process behind it.",
+  "You're not willing to track anything, even temporarily.",
+  "You want a generic program, not something built around your life.",
 ];
 
-// --- PROOF / wins ---
-const wins = [
-  { quote: "Had my opt-in page live and branded before lunch. It actually looks like me.", name: "Priya Nadar", role: "Brand strategist", result: "Live in 1 hr", image: "https://i.pravatar.cc/96?img=5" },
-  { quote: "Cancelled my page builder. I own everything now and hosting is free.", name: "Dan Whitfield", role: "Career coach", result: "$0 hosting", image: "https://i.pravatar.cc/96?img=13" },
-  { quote: "The design system means I can't make it ugly. That's the magic.", name: "Elena Rossi", role: "Illustrator", result: "On-brand, always", image: "https://i.pravatar.cc/96?img=9" },
+// --- TRANSFORMATION PHOTOS (rotating carousel) ---
+// George K., Dom, and Andrew's photos double up with their quotes above -
+// the rest are real client transformations without a written quote yet.
+const transformations = [
+  { name: "George K.", image: "/images/george-k-transformation.jpg" },
+  { name: "Dom", image: "/images/dom-transformation.jpg" },
+  { name: "Andrew", image: "/images/andrew-transformation.jpg" },
+  { name: "Bevan", image: "/images/bevan-transformation.jpg" },
+  { name: "Chris", image: "/images/chris-transformation.jpg" },
+  { name: "Evie", image: "/images/evie-transformation.jpg" },
+  { name: "Francis", image: "/images/francis-transformation.jpg" },
+  { name: "Isobel", image: "/images/isobel-transformation.jpg" },
+  { name: "Johnny", image: "/images/johnny-transformation.jpg" },
+  { name: "Kelvin", image: "/images/kelvin-transformation.jpg" },
+  { name: "Zoe", image: "/images/zoe-transformation.jpg" },
 ];
 
-// --- CHECKOUT (membership) ---
+// --- CHECKOUT (book a call, no price shown) ---
 const checkoutDeliverables = deliverables.map((d) => ({ label: d.title, value: d.value }));
 const checkoutBonuses = [
   ...bonuses.map((b) => ({ label: b.title, value: b.value })),
   { label: superBonus.title, value: superBonus.value },
 ];
-const membership = {
-  monthly: { amount: 49, suffix: "/mo" },
-  annual: { amount: 490, suffix: "/yr" },
-  annualNote: "2 months free",
-  ctaLabel: "Get the kit",
-};
+const checkoutOptions = [
+  {
+    label: "Book Your Call",
+    price: "Free",
+    note: "30 minutes, no obligation",
+    featured: true,
+  },
+];
 
-// --- GUARANTEE ---
+// --- GUARANTEE (reframed - there's no purchase yet, so this is a promise about the call itself) ---
 const guarantee = {
-  title: "7-day love-it-or-leave-it guarantee",
-  desc: "Try the kit for 7 days. If you're not stoked, just let us know and we'll pay back every dollar - no questions asked.",
+  title: "No pressure, no pitch, just clarity",
+  desc: "The call exists to figure out if this is a fit, not to sell you. If it's not the right time, I'll tell you directly, and you'll still walk away with a clearer picture of what's actually going on.",
 };
 
 // --- ABOUT ---
 const about = {
-  name: "Tom Noske",
-  role: "Founder, Time to Build",
-  bio: "I've built an education business on landing pages, and watched creators waste weeks (and thousands) on theirs. So I packaged the exact system my team uses into a kit you can run yourself, with AI doing the heavy lifting.",
-  image: "/images/about-tom.jpg",
+  name: "Peter Tsikas",
+  role: "Founder, Barebones Strength",
+  bio: "I went from 81kg to 106kg and back, through a binge cycle, and years of coaching other people while quietly falling apart myself. The thing that actually changed it wasn't more discipline, it was getting a coach and finally having a system instead of just more effort. Barebones Strength exists because I kept seeing the same pattern on gym floors and in DMs, people showing up, eating reasonably well, working hard, and still looking exactly the same, not because they were lazy, but because no one had ever given them the right strategy.",
+  image: "/images/peter-headshot.jpg",
 };
 
 // --- FAQ ---
 const faqs = [
-  { q: "Do I need to know how to code?", a: "No. You talk to Claude in plain English and it builds the pages. If you can write a prompt, you can build a page." },
-  { q: "Do I need Claude Code?", a: "Yes - the kit runs inside Claude. If you can copy a link and follow a few steps, you're set." },
-  { q: "What does hosting cost?", a: "Nothing. The kit deploys to Cloudflare's free tier - fast, global, and $0/month." },
-  { q: "Will my pages look generic?", a: "No. The built-in design system keeps every page clean and on-brand no matter how you edit it. That's the whole point." },
-  { q: "Can I cancel?", a: "Anytime, in two clicks. No contract, and you keep whatever you've built." },
+  { q: "Do I have to give up going out or the food I enjoy?", a: "No. During the fat loss phase the calorie budget is tighter, so choices matter more, but it's built around your actual life, not a list of banned foods, and it's temporary." },
+  { q: "I've tried coaching before and it didn't work. Why would this be different?", a: "Most plans fail because there was no system behind the effort, not because you lacked discipline. This runs on weekly check-ins and a framework that adjusts as your life changes, so nothing runs on guesswork." },
+  { q: "Is the call actually free, or is it a sales pitch?", a: "It's a real conversation about what's going on and whether working together makes sense. If it's not a fit, I'll tell you directly. No hard close." },
+  { q: "Will I lose strength while losing fat?", a: "Not if it's programmed properly. The plan is built to protect your numbers in the gym through the deficit, that's the whole point of the 5kg in 8 weeks promise." },
+  { q: "What happens after the 8 weeks?", a: "Fat loss is usually just the starting point. Most clients don't realise there's a maintenance phase and a building phase after it, where the real long-term change happens. We'll cover the full picture on the call." },
 ];
 
 // --- SECTION HEADINGS, EYEBROWS & CTAs (all editable copy lives here too) ---
-const pageTitle = "Time to Build Funnel Kit";
-const ctaLabel = "Get the kit"; // shared by nav, hero, final CTA + sticky bar
-const countdownLabel = "Founding price ends in";
+const pageTitle = "1:1 Coaching";
+const ctaLabel = "Book your call"; // shared by nav, hero, final CTA + sticky bar
 
-const heroEyebrow = "Time to Build Funnel Kit";
+const heroEyebrow = "Barebones Strength · 1:1 Coaching";
 const heroSecondaryLabel = "See how it works";
-const heroTrustLabel = "Used by 1,000+ creators";
+const heroTrustLabel = "Not for beginners. Built for people already in the gym.";
 
-const problemEyebrow = "The problem";
-const problemHeading = "AI can build a landing page. It just looks like everyone else's.";
+const problemEyebrow = "The pattern";
+const problemHeading = "You're already showing up. It's still not working.";
 
 const solutionEyebrow = "How it works";
-const solutionHeading = "Your AI builder, plus a design system that can't go ugly";
+const solutionHeading = "The Barebones Method";
 const solutionSub =
-  "Claude does the building. The kit makes sure it comes out clean, branded, and built to convert.";
+  "Structure creates freedom, not restriction. The more clearly defined the system, the less mental energy it costs, and the more energy goes toward actually doing the work.";
 
-const winsEyebrow = "Student wins";
-const winsHeading = "Results from people who shipped";
-const winsSub = "Real creators, real pages, real numbers - built with the same kit you're getting.";
+const winsEyebrow = "Client wins";
+const winsHeading = "Results from people who were already trying hard";
+const winsSub = "Real clients, real check-ins, real numbers, built on the same method you'd be getting.";
 
 const includedEyebrow = "Everything included";
 const includedHeading = "Here's exactly what you get";
 
-const bonusesEyebrow = "+ Included free";
-const bonusesHeading = "Stacked bonuses";
-const superBonusBadge = "Super bonus";
-const bonusesTotalLabel = "Bonuses total value";
+const bonusesEyebrow = "Also included";
+const bonusesHeading = "What's included beyond the core program";
+const superBonusBadge = "Also included";
+const bonusesTotalLabel = "Everything included";
 
 const outcomesEyebrow = "What changes";
-const outcomesHeading = "From AI slop to pages that sell";
+const outcomesHeading = "From guessing to knowing exactly what to do";
 
-const whoEyebrow = "Who it's for";
-const whoHeading = "Read this before you buy";
+const whoEyebrow = "Who this is for";
+const whoHeading = "Read this before you book a call";
 const forYouTitle = "This is for you if";
 const notForYouTitle = "This isn't for you if";
 
 const testimonialsEyebrow = "Real results";
-const testimonialsHeading = "What creators are saying";
+const testimonialsHeading = "See it for yourself";
+const testimonialsSub = "Real client transformations, one at a time.";
 
-const checkoutEyebrow = "Your checkout";
-const checkoutTitle = "Get the kit";
-const checkoutTotalValue = "$4,850";
-const checkoutBadges = ["Cancel anytime", "Free hosting included", "Lifetime updates"];
+const checkoutEyebrow = "Book your call";
+const checkoutTitle = "Let's see if this is a fit";
+const checkoutTotalValue = "Everything in Phase 1, done for you";
+const checkoutPriceLabel = "To book your call";
+const checkoutDiscountNote = "No card required";
+const checkoutBadges = ["No card required", "30-minute call", "No pressure, no pitch"];
 
-const aboutEyebrow = "About";
+const aboutEyebrow = "About your coach";
 const aboutHeading = `Hi, I'm ${about.name}`;
 
 const faqEyebrow = "Questions";
 const faqHeading = "Frequently asked questions";
 
-const finalCtaHeading = "Build a page that actually converts, today";
+const finalCtaHeading = "Ready to see if this is a fit?";
 const finalCtaSub =
-  "Grab the kit, brand it in one command, and have a landing page live this afternoon.";
-const finalCtaTrust = "Cancel anytime · free hosting included";
+  "Book a free call and we'll figure out whether working together makes sense. No pressure, no pitch.";
+const finalCtaTrust = "Free call · no card required · no pressure";
 
-const footerTagline = "Simple, AI-powered landing pages that convert.";
-const stickyNote = "Time to Build Funnel Kit";
+const footerTagline = "1:1 coaching for people who are already showing up and want the results to finally match the effort.";
+const stickyNote = "Free, no-pressure call";
 
 const SECTION = "mx-auto max-w-6xl px-6 py-16 md:py-20";
-const HEADING = "text-3xl font-bold tracking-tight text-ink md:text-4xl";
+const HEADING = "text-3xl font-bold tracking-tight md:text-4xl";
+
+// --- COLOUR SCHEME EXPERIMENT ---
+// Sections alternate green/cream full-bleed bands. Cards within a band flip
+// to the OPPOSITE brand colour so they always read clearly against it
+// (cream cards on green, green cards on cream) - matches the brand rule
+// that green and cream can sit directly together. Text is white on green,
+// fixed near-black (not the theme-flipping --color-ink) on cream.
+const GREEN = {
+  section: "bg-brand-500",
+  eyebrow: "text-white/80",
+  heading: "text-white",
+  body: "text-white/75",
+  line: "border-white/20", // for borders directly on the green bg (not inside a flipped card)
+  cardBorder: "border-ink-fixed/10",
+  cardBg: "bg-secondary",
+  cardHeading: "text-ink-fixed",
+  cardBody: "text-ink-fixed/70",
+  cross: "text-brand-700",
+  chipBg: "bg-brand-700",
+  chipText: "text-white",
+  navBtn: "border-white/30 text-white/70 hover:bg-white/10 hover:text-white",
+};
+const CREAM = {
+  section: "bg-secondary",
+  eyebrow: "text-brand-700",
+  heading: "text-ink-fixed",
+  body: "text-ink-fixed/70",
+  line: "border-ink-fixed/15", // for borders directly on the cream bg (not inside a flipped card)
+  cardBorder: "border-white/15",
+  cardBg: "bg-brand-500",
+  cardHeading: "text-white",
+  cardBody: "text-white/80",
+  cross: "text-white",
+  chipBg: "bg-white",
+  chipText: "text-brand-700",
+  navBtn: "border-ink-fixed/20 text-ink-fixed/70 hover:bg-ink-fixed/5 hover:text-ink-fixed",
+};
 ---
 
 <Base title={pageTitle} description={heroSubheadline}>
-  <CountdownBar client:load targetDate={closesAt} label={countdownLabel} />
-
-  <SiteNav links={navLinks} ctaLabel={ctaLabel} />
+  <SiteNav links={navLinks} ctaLabel={ctaLabel} tone="brand" />
 
   <Hero
-    mode="text"
+    mode="vsl"
     eyebrow={heroEyebrow}
     headline={heroHeadline}
     subheadline={heroSubheadline}
-    bullets={heroBullets}
     ctaLabel={ctaLabel}
     secondaryLabel={heroSecondaryLabel}
     secondaryHref="#how"
     trustLabel={heroTrustLabel}
+    avatars={transformations.slice(0, 6).map((t) => t.image)}
+    videoUrl="https://youtu.be/h5om__RVrBw"
+    imageAlt="Watch the video - meet your coach"
+    tone="cream"
   />
 
-  <ProofStrip stats={proofStats} />
+  <ProofStrip stats={proofStats} tone="brand" />
 
   <div data-sticky-sentinel></div>
 
   <!-- PROBLEM -->
-  <section class="bg-surface-2">
+  <section class={CREAM.section}>
     <div class={SECTION}>
       <div class="mx-auto max-w-2xl text-center">
-        <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{problemEyebrow}</p>
-        <h2 class={`mt-3 ${HEADING}`}>{problemHeading}</h2>
+        <p class={`text-sm font-bold uppercase tracking-wide ${CREAM.eyebrow}`}>{problemEyebrow}</p>
+        <h2 class={`mt-3 ${HEADING} ${CREAM.heading}`}>{problemHeading}</h2>
       </div>
       <ul class="mx-auto mt-10 grid max-w-3xl gap-4 sm:grid-cols-2">
         {
           problems.map((p) => (
-            <li class="flex items-start gap-3 rounded-card border border-line bg-card p-5 text-ink">
-              <span class="mt-0.5 text-lg leading-none text-brand-500">&#10005;</span>
+            <li class={`flex items-start gap-3 rounded-card border ${CREAM.cardBorder} ${CREAM.cardBg} p-5 ${CREAM.cardHeading}`}>
+              <span class={`mt-0.5 text-lg leading-none ${CREAM.cross}`}>&#10005;</span>
               <span class="text-base leading-snug">{p}</span>
             </li>
           ))
@@ -290,24 +334,24 @@ const HEADING = "text-3xl font-bold tracking-tight text-ink md:text-4xl";
   </section>
 
   <!-- SOLUTION -->
-  <section id="how" class="bg-surface">
+  <section id="how" class={GREEN.section}>
     <div class={SECTION}>
       <div class="mx-auto max-w-2xl text-center">
-        <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{solutionEyebrow}</p>
-        <h2 class={`mt-3 ${HEADING}`}>{solutionHeading}</h2>
-        <p class="mt-4 text-lg leading-relaxed text-ink-muted">
+        <p class={`text-sm font-bold uppercase tracking-wide ${GREEN.eyebrow}`}>{solutionEyebrow}</p>
+        <h2 class={`mt-3 ${HEADING} ${GREEN.heading}`}>{solutionHeading}</h2>
+        <p class={`mt-4 text-lg leading-relaxed ${GREEN.body}`}>
           {solutionSub}
         </p>
       </div>
       <div class="mt-12 grid gap-6 md:grid-cols-3">
         {
           steps.map((s, i) => (
-            <div class="rounded-card border border-line bg-card p-6">
-              <span class="flex h-9 w-9 items-center justify-center rounded-full bg-chip text-sm font-bold text-chip-ink">
+            <div class={`rounded-card border ${GREEN.cardBorder} ${GREEN.cardBg} p-6`}>
+              <span class={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${GREEN.chipBg} ${GREEN.chipText}`}>
                 {i + 1}
               </span>
-              <h3 class="mt-4 text-lg font-bold text-ink">{s.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-ink-muted">{s.desc}</p>
+              <h3 class={`mt-4 text-lg font-bold ${GREEN.cardHeading}`}>{s.title}</h3>
+              <p class={`mt-2 text-sm leading-relaxed ${GREEN.cardBody}`}>{s.desc}</p>
             </div>
           ))
         }
@@ -321,26 +365,27 @@ const HEADING = "text-3xl font-bold tracking-tight text-ink md:text-4xl";
     heading={winsHeading}
     subheading={winsSub}
     wins={studentWins}
+    tone="cream"
   />
 
   <!-- WHAT YOU GET -->
-  <section id="included" class="bg-surface-2">
+  <section id="included" class={GREEN.section}>
     <div class={SECTION}>
       <div class="mx-auto max-w-2xl text-center">
-        <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{includedEyebrow}</p>
-        <h2 class={`mt-3 ${HEADING}`}>{includedHeading}</h2>
+        <p class={`text-sm font-bold uppercase tracking-wide ${GREEN.eyebrow}`}>{includedEyebrow}</p>
+        <h2 class={`mt-3 ${HEADING} ${GREEN.heading}`}>{includedHeading}</h2>
       </div>
-      <div class="mx-auto mt-12 max-w-4xl border-t border-line">
+      <div class={`mx-auto mt-12 max-w-4xl border-t ${GREEN.line}`}>
         {
           deliverables.map((d) => (
-            <div class="border-b border-line py-7">
+            <div class={`border-b ${GREEN.line} py-7`}>
               <div class="flex items-start justify-between gap-4">
-                <h3 class="text-xl font-bold text-ink md:text-2xl">{d.title}</h3>
-                <span class="mt-1 shrink-0 rounded-full border border-line px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-ink-muted">
+                <h3 class={`text-xl font-bold md:text-2xl ${GREEN.heading}`}>{d.title}</h3>
+                <span class={`mt-1 shrink-0 rounded-full border ${GREEN.line} px-3 py-1 text-[11px] font-medium uppercase tracking-wide ${GREEN.body}`}>
                   {d.value} value
                 </span>
               </div>
-              <p class="mt-2 max-w-2xl text-base leading-relaxed text-ink-muted">{d.desc}</p>
+              <p class={`mt-2 max-w-2xl text-base leading-relaxed ${GREEN.body}`}>{d.desc}</p>
             </div>
           ))
         }
@@ -349,67 +394,67 @@ const HEADING = "text-3xl font-bold tracking-tight text-ink md:text-4xl";
   </section>
 
   <!-- BONUSES -->
-  <section class="bg-surface">
+  <section class={CREAM.section}>
     <div class={SECTION}>
       <div class="mx-auto max-w-2xl text-center">
-        <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{bonusesEyebrow}</p>
-        <h2 class={`mt-3 ${HEADING}`}>{bonusesHeading}</h2>
+        <p class={`text-sm font-bold uppercase tracking-wide ${CREAM.eyebrow}`}>{bonusesEyebrow}</p>
+        <h2 class={`mt-3 ${HEADING} ${CREAM.heading}`}>{bonusesHeading}</h2>
       </div>
 
       <div class="mt-12 grid gap-6 md:grid-cols-2">
         {
           bonuses.map((b) => (
-            <div class="rounded-card border border-line bg-card p-6">
-              <span class="inline-flex items-center rounded-md bg-chip px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-chip-ink">
+            <div class={`rounded-card border ${CREAM.cardBorder} ${CREAM.cardBg} p-6`}>
+              <span class={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${CREAM.chipBg} ${CREAM.chipText}`}>
                 {b.n}
               </span>
-              <h3 class="mt-4 text-lg font-bold text-ink">{b.title}</h3>
-              <p class="mt-1 text-sm font-semibold text-brand-600">{b.sub}</p>
-              <p class="mt-2 text-sm leading-relaxed text-ink-muted">{b.desc}</p>
-              <p class="mt-4 text-sm font-semibold text-ink">
-                <span class="text-ink-muted line-through">{b.value}</span>
-                <span class="mx-1 text-brand-500">&#8594;</span>
-                <span class="text-brand-600">FREE</span>
+              <h3 class={`mt-4 text-lg font-bold ${CREAM.cardHeading}`}>{b.title}</h3>
+              <p class="mt-1 text-sm font-semibold text-white">{b.sub}</p>
+              <p class={`mt-2 text-sm leading-relaxed ${CREAM.cardBody}`}>{b.desc}</p>
+              <p class={`mt-4 text-sm font-semibold ${CREAM.cardHeading}`}>
+                <span class={`${CREAM.cardBody} line-through`}>{b.value}</span>
+                <span class="mx-1 text-secondary">&#8594;</span>
+                <span class="text-white">FREE</span>
               </p>
             </div>
           ))
         }
       </div>
 
-      <div class="mt-6 rounded-card border-2 border-brand-500 bg-card p-6 text-center md:p-8">
-        <span class="inline-flex items-center rounded-md bg-brand-500 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-brand-ink">
+      <div class={`mt-6 rounded-card border-2 border-white/40 ${CREAM.cardBg} p-6 text-center md:p-8`}>
+        <span class={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${CREAM.chipBg} ${CREAM.chipText}`}>
           {superBonusBadge}
         </span>
-        <h3 class="mt-4 text-xl font-bold text-ink">{superBonus.title}</h3>
-        <p class="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-ink-muted">{superBonus.desc}</p>
+        <h3 class={`mt-4 text-xl font-bold ${CREAM.cardHeading}`}>{superBonus.title}</h3>
+        <p class={`mx-auto mt-2 max-w-xl text-sm leading-relaxed ${CREAM.cardBody}`}>{superBonus.desc}</p>
         <p class="mt-4 text-sm font-semibold">
-          <span class="text-ink-muted line-through">{superBonus.value}</span>
-          <span class="mx-1 text-brand-500">&#8594;</span>
-          <span class="text-brand-600">FREE</span>
+          <span class={`${CREAM.cardBody} line-through`}>{superBonus.value}</span>
+          <span class="mx-1 text-secondary">&#8594;</span>
+          <span class="text-white">FREE</span>
         </p>
       </div>
 
-      <div class="mt-6 rounded-card bg-surface-dark p-8 text-center text-ink-dark">
-        <p class="text-xs font-semibold uppercase tracking-wide text-ink-dark/60">{bonusesTotalLabel}</p>
-        <p class="mt-2 text-4xl font-extrabold text-brand-400">{bonusesTotal}</p>
+      <div class="mt-6 rounded-card bg-brand-500 p-8 text-center">
+        <p class="text-xs font-semibold uppercase tracking-wide text-secondary/70">{bonusesTotalLabel}</p>
+        <p class="mt-2 text-4xl font-extrabold text-secondary">{bonusesTotal}</p>
       </div>
     </div>
   </section>
 
   <!-- OUTCOMES -->
-  <section class="bg-surface-2">
+  <section class={GREEN.section}>
     <div class={SECTION}>
       <div class="mx-auto max-w-2xl text-center">
-        <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{outcomesEyebrow}</p>
-        <h2 class={`mt-3 ${HEADING}`}>{outcomesHeading}</h2>
+        <p class={`text-sm font-bold uppercase tracking-wide ${GREEN.eyebrow}`}>{outcomesEyebrow}</p>
+        <h2 class={`mt-3 ${HEADING} ${GREEN.heading}`}>{outcomesHeading}</h2>
       </div>
-      <div class="mx-auto mt-10 max-w-2xl divide-y divide-line overflow-hidden rounded-card border border-line bg-card">
+      <div class={`mx-auto mt-10 max-w-2xl divide-y divide-ink-fixed/10 overflow-hidden rounded-card border ${GREEN.cardBorder} ${GREEN.cardBg}`}>
         {
           outcomes.map((o) => (
             <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 py-4 text-sm sm:gap-5 sm:px-6">
-              <span class="text-ink-muted line-through">{o.before}</span>
+              <span class={`${GREEN.cardBody} line-through`}>{o.before}</span>
               <span class="text-brand-500" aria-hidden="true">&#8594;</span>
-              <span class="font-semibold text-ink">{o.after}</span>
+              <span class={`font-semibold ${GREEN.cardHeading}`}>{o.after}</span>
             </div>
           ))
         }
@@ -418,43 +463,43 @@ const HEADING = "text-3xl font-bold tracking-tight text-ink md:text-4xl";
   </section>
 
   <!-- WHO IT'S FOR -->
-  <section class="bg-surface">
+  <section class={CREAM.section}>
     <div class={SECTION}>
       <div class="mx-auto max-w-2xl text-center">
-        <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{whoEyebrow}</p>
-        <h2 class={`mt-3 ${HEADING}`}>{whoHeading}</h2>
+        <p class={`text-sm font-bold uppercase tracking-wide ${CREAM.eyebrow}`}>{whoEyebrow}</p>
+        <h2 class={`mt-3 ${HEADING} ${CREAM.heading}`}>{whoHeading}</h2>
       </div>
       <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
-        <div class="rounded-card bg-surface-dark p-7 text-ink-dark md:p-8">
+        <div class={`rounded-card ${CREAM.cardBg} p-7 ${CREAM.cardHeading} md:p-8`}>
           <h3 class="text-xl font-bold">{forYouTitle}</h3>
           <ul class="mt-5 space-y-4">
             {
               forYou.map((item) => (
                 <li class="flex items-start gap-3">
-                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500">
-                    <svg class="h-3 w-3 text-brand-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary">
+                    <svg class="h-3 w-3 text-brand-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4 10-12" />
                     </svg>
                   </span>
-                  <span class="text-sm leading-relaxed">{item}</span>
+                  <span class={`text-sm leading-relaxed ${CREAM.cardBody}`}>{item}</span>
                 </li>
               ))
             }
           </ul>
         </div>
-        <div class="rounded-card border border-line bg-card p-7 md:p-8">
-          <h3 class="text-xl font-bold text-ink">{notForYouTitle}</h3>
+        <div class={`rounded-card border ${CREAM.line} p-7 md:p-8`}>
+          <h3 class={`text-xl font-bold ${CREAM.heading}`}>{notForYouTitle}</h3>
           <ul class="mt-5 space-y-4">
             {
               notForYou.map((item) => (
                 <li class="flex items-start gap-3">
-                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink-muted/15 text-ink-muted">
+                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink-fixed/10 text-ink-fixed/50">
                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
                       <path d="m6 6 12 12" />
                       <path d="m18 6-12 12" />
                     </svg>
                   </span>
-                  <span class="text-sm leading-relaxed text-ink-muted">{item}</span>
+                  <span class={`text-sm leading-relaxed ${CREAM.body}`}>{item}</span>
                 </li>
               ))
             }
@@ -464,113 +509,88 @@ const HEADING = "text-3xl font-bold tracking-tight text-ink md:text-4xl";
     </div>
   </section>
 
-  <!-- PROOF / STUDENT WINS -->
-  <section class="bg-surface-2">
-    <div class={SECTION}>
-      <div class="mx-auto max-w-2xl text-center">
-        <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{testimonialsEyebrow}</p>
-        <h2 class={`mt-3 ${HEADING}`}>{testimonialsHeading}</h2>
-      </div>
-      <div class="mt-12 grid gap-6 md:grid-cols-3">
-        {
-          wins.map((w) => (
-            <div class="flex flex-col rounded-card border border-line bg-card p-6">
-              <div class="flex text-sm leading-none tracking-wide text-brand-500" aria-hidden="true">
-                &#9733;&#9733;&#9733;&#9733;&#9733;
-              </div>
-              <p class="mt-4 flex-1 text-base leading-relaxed text-ink">&#8220;{w.quote}&#8221;</p>
-              <div class="mt-5 flex items-center gap-3 border-t border-line pt-4">
-                <img
-                  src={w.image}
-                  alt={w.name}
-                  width="40"
-                  height="40"
-                  class="h-10 w-10 shrink-0 rounded-full object-cover"
-                  loading="lazy"
-                />
-                <div class="min-w-0 flex-1">
-                  <p class="truncate text-sm font-semibold text-ink">{w.name}</p>
-                  <p class="truncate text-xs text-ink-muted">{w.role}</p>
-                </div>
-                <span class="shrink-0 rounded-full bg-chip px-2.5 py-1 text-xs font-bold text-chip-ink">{w.result}</span>
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  <!-- TRANSFORMATION PHOTOS - rotating carousel, click a dot/arrow to jump -->
+  <PhotoCarousel
+    eyebrow={testimonialsEyebrow}
+    heading={testimonialsHeading}
+    subheading={testimonialsSub}
+    items={transformations}
+    tone="brand"
+  />
 
-  <!-- CHECKOUT (membership) -->
+  <!-- CHECKOUT (book a call, no price) -->
   <CheckoutCard
     eyebrow={checkoutEyebrow}
     title={checkoutTitle}
     deliverables={checkoutDeliverables}
     bonuses={checkoutBonuses}
     totalValue={checkoutTotalValue}
-    membership={membership}
+    priceLabel={checkoutPriceLabel}
+    discountNote={checkoutDiscountNote}
+    options={checkoutOptions}
     badges={checkoutBadges}
+    tone="cream"
   />
 
   <!-- GUARANTEE -->
-  <section class="bg-surface-2">
+  <section class={GREEN.section}>
     <div class="mx-auto max-w-3xl px-6 py-16 md:py-20">
-      <div class="rounded-card border border-line bg-card p-8 text-center md:p-10">
-        <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-chip">
-          <svg class="h-6 w-6 text-chip-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <div class={`rounded-card border ${GREEN.cardBorder} ${GREEN.cardBg} p-8 text-center md:p-10`}>
+        <span class={`mx-auto flex h-12 w-12 items-center justify-center rounded-full ${GREEN.chipBg}`}>
+          <svg class={`h-6 w-6 ${GREEN.chipText}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
             <path d="m9 12 2 2 4-4" />
           </svg>
         </span>
-        <h2 class="mt-5 text-2xl font-bold tracking-tight text-ink md:text-3xl">{guarantee.title}</h2>
-        <p class="mx-auto mt-3 max-w-xl text-base leading-relaxed text-ink-muted">{guarantee.desc}</p>
+        <h2 class={`mt-5 text-2xl font-bold tracking-tight md:text-3xl ${GREEN.cardHeading}`}>{guarantee.title}</h2>
+        <p class={`mx-auto mt-3 max-w-xl text-base leading-relaxed ${GREEN.cardBody}`}>{guarantee.desc}</p>
       </div>
     </div>
   </section>
 
   <!-- ABOUT -->
-  <section class="bg-surface">
+  <section class={CREAM.section}>
     <div class={SECTION}>
       <div class="grid items-center gap-10 md:grid-cols-[2fr_3fr] md:gap-14">
-        <div class="overflow-hidden rounded-card border border-line bg-surface-2">
-          <img src={about.image} alt={about.name} width="900" height="1352" class="aspect-[4/5] w-full object-cover" loading="lazy" />
+        <div class={`overflow-hidden rounded-card border ${CREAM.line} ${CREAM.cardBg}`}>
+          <img src={about.image} alt={about.name} width="900" height="1350" class="aspect-[4/5] w-full object-cover object-top" loading="lazy" />
         </div>
         <div>
-          <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{aboutEyebrow}</p>
-          <h2 class={`mt-3 ${HEADING}`}>{aboutHeading}</h2>
-          <p class="mt-2 text-base font-medium text-ink-muted">{about.role}</p>
-          <p class="mt-5 text-lg leading-relaxed text-ink-muted">{about.bio}</p>
+          <p class={`text-sm font-bold uppercase tracking-wide ${CREAM.eyebrow}`}>{aboutEyebrow}</p>
+          <h2 class={`mt-3 ${HEADING} ${CREAM.heading}`}>{aboutHeading}</h2>
+          <p class={`mt-2 text-base font-medium ${CREAM.body}`}>{about.role}</p>
+          <p class={`mt-5 text-lg leading-relaxed ${CREAM.body}`}>{about.bio}</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section id="faq" class="bg-surface-2">
+  <section id="faq" class={GREEN.section}>
     <div class="mx-auto max-w-3xl px-6 py-16 md:py-20">
       <div class="mx-auto max-w-2xl text-center">
-        <p class="text-sm font-bold uppercase tracking-wide text-brand-600">{faqEyebrow}</p>
-        <h2 class={`mt-3 ${HEADING}`}>{faqHeading}</h2>
+        <p class={`text-sm font-bold uppercase tracking-wide ${GREEN.eyebrow}`}>{faqEyebrow}</p>
+        <h2 class={`mt-3 ${HEADING} ${GREEN.heading}`}>{faqHeading}</h2>
       </div>
       <div class="mt-10">
-        <Faq items={faqs} />
+        <Faq items={faqs} tone="brand" />
       </div>
     </div>
   </section>
 
   <!-- FINAL CTA -->
-  <section class="bg-surface-dark text-ink-dark">
+  <section class={`${CREAM.section} ${CREAM.heading}`}>
     <div class="mx-auto max-w-3xl px-6 py-20 text-center md:py-24">
       <h2 class="text-3xl font-extrabold tracking-tight md:text-4xl">
         {finalCtaHeading}
       </h2>
-      <p class="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink-dark/70">
+      <p class={`mx-auto mt-4 max-w-xl text-lg leading-relaxed ${CREAM.body}`}>
         {finalCtaSub}
       </p>
       <div class="mt-8 flex justify-center">
         <CtaButton label={ctaLabel} />
       </div>
-      <p class="mt-4 text-xs uppercase tracking-wide text-ink-dark/50">
+      <p class={`mt-4 text-xs uppercase tracking-wide ${CREAM.body}`}>
         {finalCtaTrust}
       </p>
     </div>
@@ -579,6 +599,4 @@ const HEADING = "text-3xl font-bold tracking-tight text-ink md:text-4xl";
   <SiteFooter tagline={footerTagline} />
 
   <StickyCta label={ctaLabel} note={stickyNote} />
-
-  <ThemeCustomizer />
 </Base>

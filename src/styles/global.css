@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource-variable/inter";
-@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/montserrat";
 
 /* ============================================================
    Time to Build Funnel Kit - Design tokens
@@ -15,67 +15,67 @@
    ============================================================ */
 
 @theme {
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* Headlines use a display font with more character than the body. */
-  --font-display: "Outfit Variable", "Outfit", var(--font-sans);
+  /* Barebones brand: Montserrat carries body/UI copy, Inter carries headings. */
+  --font-sans: "Montserrat Variable", "Montserrat", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter Variable", "Inter", var(--font-sans);
 
-  /* 1. Brand accent. The whole 10-step scale derives from ONE hue plus a
-        saturation multiplier, so a theme preset only sets these two values.
-        amber 75 · orange 55 · teal 185 · emerald 162 · sage 155 · blue 264 · violet 295 */
-  --brand-hue: 185;
-  --brand-chroma: 1; /* saturation multiplier (1 = vivid, ~0.3 = muted) */
+  /* 1. Brand accent - Barebones green (#0a4834), hue ~166. The 400/500/600
+        steps are pinned to exact brand hex (500 = primary, 600 = deeper for
+        labels, 400 = the brand's own lighter hover green); the rest of the
+        10-step scale is derived from the same hue for tints/chips. */
+  --brand-hue: 166;
+  --brand-chroma: 1.1; /* saturation multiplier (1 = vivid, ~0.3 = muted) */
   --color-brand-50:  oklch(97% calc(0.03 * var(--brand-chroma)) var(--brand-hue));
   --color-brand-100: oklch(94% calc(0.06 * var(--brand-chroma)) var(--brand-hue));
   --color-brand-200: oklch(90% calc(0.10 * var(--brand-chroma)) var(--brand-hue));
   --color-brand-300: oklch(84% calc(0.13 * var(--brand-chroma)) var(--brand-hue));
-  --color-brand-400: oklch(78% calc(0.15 * var(--brand-chroma)) var(--brand-hue));
-  --color-brand-500: oklch(72% calc(0.16 * var(--brand-chroma)) var(--brand-hue));
-  --color-brand-600: oklch(62% calc(0.14 * var(--brand-chroma)) var(--brand-hue));
+  --color-brand-400: #0d5c42; /* Barebones hover green - bright accent on dark bands */
+  --color-brand-500: #0a4834; /* Barebones brand green (exact) */
+  --color-brand-600: #06392a; /* deeper green for labels on light backgrounds */
   --color-brand-700: oklch(52% calc(0.12 * var(--brand-chroma)) var(--brand-hue));
   --color-brand-800: oklch(42% calc(0.09 * var(--brand-chroma)) var(--brand-hue));
   --color-brand-900: oklch(32% calc(0.06 * var(--brand-chroma)) var(--brand-hue));
   --color-brand: var(--color-brand-500);
-  --color-brand-ink: oklch(100% 0 0); /* text on brand fills - white by default; themes can override */
+  --color-brand-ink: #ebe1cf; /* Barebones cream text on green buttons - unchanged in dark mode */
 
-  /* Soft "chip" accent for small badges / pills / icon circles. Flips in
-     dark mode (see below) to a dark tint + light text, instead of a bright
-     fill that screams on a dark page. */
-  --color-chip:     var(--color-brand-100);
-  --color-chip-ink: var(--color-brand-800);
+  /* Soft "chip" accent for small badges / pills / icon circles. Barebones
+     tags/badges are always cream + near-black, in both modes. */
+  --color-chip:     #ebe1cf;
+  --color-chip-ink: #010b13;
 
-  /* Optional secondary accent for the secondary CTA button. Transparent by
-     default (so the button is a plain outline); a theme can set a colour to
-     turn it into a filled secondary button. */
-  --color-secondary:     transparent;
-  --color-secondary-ink: var(--color-ink);
+  /* Secondary CTA button: Barebones cream fill + near-black text. */
+  --color-secondary:     #ebe1cf;
+  --color-secondary-ink: #010b13;
 
-  /* 2. Neutral surfaces - kept genuinely neutral (no hue) so any brand
-        accent reads clean on top, the way premium themes do it. */
-  --color-surface:   oklch(100% 0 0);  /* crisp white page background */
-  --color-surface-2: oklch(97% 0 0);   /* subtle panel */
-  --color-card:      oklch(100% 0 0);
-  --color-ink:       oklch(24% 0 0);   /* near-black text */
-  --color-ink-muted: oklch(50% 0 0);   /* secondary text */
-  --color-line:      oklch(91% 0 0);   /* borders */
+  /* 2. Neutral surfaces - Barebones off-white / near-black system. */
+  --color-surface:   #f0edee; /* Barebones off-white page background */
+  --color-surface-2: #ebe1cf; /* Barebones cream - section tints / callouts */
+  --color-card:      #ffffff; /* white cards against the off-white page */
+  --color-ink:       #010b13; /* Barebones near-black text */
+  --color-ink-muted: #4a5568; /* Barebones supporting/secondary text */
+  --color-line:      #ddd8d0; /* Barebones default border */
+
+  /* Fixed near-black - does NOT flip in dark mode, unlike --color-ink.
+     Used for text that sits on a cream band regardless of site theme (e.g.
+     the primary/secondary alternating section experiment). */
+  --color-ink-fixed: #010b13;
 
   /* 3. Dark contrast band (dark sections within light mode) */
-  --color-surface-dark: oklch(22% 0 0);
-  --color-ink-dark:     oklch(96% 0 0);
+  --color-surface-dark: #010b13; /* Barebones near-black */
+  --color-ink-dark:     #f0edee; /* Barebones off-white */
 
   /* Control corner radius - buttons AND inputs share this one token.
-     Change this single value to reshape every button/input on the site:
-       Square:  0
-       Curved:  0.5rem  (default)
-       Pill:    9999px
+     Barebones radius-md = 10px.
      Generates the `rounded-control` utility. */
-  --radius-control: 0.5rem;
+  --radius-control: 0.625rem;
 
   /* Card + image corner radius (the radius control drives this too).
+     Barebones radius-lg = 16px.
      Generates the `rounded-card` utility. */
   --radius-card: 1rem;
 
   /* Type weights + case (the Customise Theme panel / brand-setup drive these). */
-  --heading-weight: 800; /* h1-h3 */
+  --heading-weight: 700; /* h1-h3 - Barebones bold weight */
   --btn-weight: 600; /* buttons */
   --heading-transform: none; /* none | uppercase */
   --btn-transform: none; /* none | uppercase */
@@ -100,39 +100,32 @@ html {
 [data-theme="dark"] {
   color-scheme: dark;
 
-  /* Neutral charcoal ramp - the brand shows through the accents, NOT the
-     surfaces. That's how premium dark themes (Linear, Vercel, the shadcn
-     themes) stay clean instead of muddy. Tinting the charcoal toward the
-     brand is what made this read brown, so the surfaces are kept neutral
-     and the elevation steps are spaced so panels read as layered.
-
-       page  0.16  ->  panel 0.20  ->  card 0.22  ->  band 0.26
-       border 0.30 sits a clear step above the cards so edges catch light.
-       text is a soft off-white (0.96), not a harsh pure white. */
-  --color-surface:   oklch(0.16 0 0);  /* page background */
-  --color-surface-2: oklch(0.20 0 0);  /* subtle panel */
-  --color-card:      oklch(0.22 0 0);  /* elevated card */
-  --color-ink:       oklch(0.96 0 0);  /* primary text */
-  --color-ink-muted: oklch(0.70 0 0);  /* secondary text */
-  --color-line:      oklch(0.30 0 0);  /* borders */
+  /* Barebones dark mode: the base inverts to near-black / off-white text
+     (per the brand rule), while green and cream stay exactly as they are
+     in light mode. Elevation steps are lightened off near-black so panels
+     still read as layered instead of muddy. */
+  --color-surface:   #010b13; /* Barebones near-black page background */
+  --color-surface-2: #0f1921; /* subtle panel, lightened off near-black */
+  --color-card:      #1a242c; /* elevated card */
+  --color-ink:       #f0edee; /* Barebones off-white primary text */
+  --color-ink-muted: #a39d95; /* muted supporting text */
+  --color-line:      #2a353d; /* borders */
 
   /* Premium contrast bands (checkout, proof strip, final CTA) sit just
      above the cards so they still read as elevated panels. */
-  --color-surface-dark: oklch(0.26 0 0);
-  --color-ink-dark:     oklch(0.97 0 0);
+  --color-surface-dark: #232e36;
+  --color-ink-dark:     #f0edee;
 
-  /* Chips flip: a soft dark tint of the accent + light accent text,
-     instead of a bright fill. */
-  --color-chip:     color-mix(in oklch, var(--color-brand-500) 22%, transparent);
-  --color-chip-ink: var(--color-brand-200);
+  /* Tags/badges stay cream + near-black per the brand rule - the green and
+     cream never change between light and dark mode, so no flip here. */
+  --color-chip:     #ebe1cf;
+  --color-chip-ink: #010b13;
 }
 
 /* ============================================================
-   Theme presets - a one-word, premium palette swap. Set `preset`
-   in config.ts to ship one, or preview them all with <ThemePresets/>
-   on /showcase. Each preset only changes the ACCENT (hue + saturation);
-   the neutral surfaces stay shared, so every preset looks clean and
-   works in both light and dark mode automatically.
+   Quick accent presets - not used on this site (Barebones ships a
+   "custom" preset with the exact brand green set above), kept here
+   in case a future page wants to preview one of the built-ins.
    ============================================================ */
 [data-preset="teal"]   { --brand-hue: 185; --brand-chroma: 1; }
 [data-preset="blue"]   { --brand-hue: 264; --brand-chroma: 1.05; }

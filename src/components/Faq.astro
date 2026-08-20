@@ -2,11 +2,22 @@
 // Reusable accordion: animated open/close, one open at a time.
 interface Props {
   items: { q: string; a: string }[];
+  /** surface: default neutral. brand/cream: the primary/secondary colour
+   * experiment - locally overrides the CSS vars this component's own
+   * stylesheet reads, so no rule below needs to change. */
+  tone?: "surface" | "brand" | "cream";
 }
-const { items } = Astro.props;
+const { items, tone = "surface" } = Astro.props;
+
+const toneStyle =
+  tone === "brand"
+    ? "--color-line:rgba(255,255,255,0.2);--color-ink:#ffffff;--color-ink-muted:rgba(255,255,255,0.75);"
+    : tone === "cream"
+      ? "--color-line:rgba(1,11,19,0.15);--color-ink:#010b13;--color-ink-muted:rgba(1,11,19,0.7);"
+      : undefined;
 ---
 
-<div class="faq" data-faq>
+<div class="faq" data-faq style={toneStyle}>
   {
     items.map((f) => (
       <div class="faq-item" data-faq-item>

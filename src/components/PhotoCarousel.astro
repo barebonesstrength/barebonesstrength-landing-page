@@ -1,24 +1,20 @@
 ---
-// Rotating "student wins" card - one result-led win at a time.
-// Distinct from the testimonial section: a win leads with the concrete
-// OUTCOME (the headline), then the quote, then the person. Auto-rotates;
-// pauses on hover/focus; respects prefers-reduced-motion.
-interface Win {
-  result: string; // the hero line, e.g. "0 -> first opt-in page live in 40 min"
-  quote: string; // rendered as HTML - wrap a phrase in <strong> to bold it
+// Rotating photo carousel - one photo at a time, auto-plays, click a dot or
+// arrow to jump directly. Same rotation/pause/reduced-motion mechanics as
+// StudentWins.astro, just photo + caption instead of a full quote card.
+interface Item {
   name: string;
-  meta: string; // handle / role line
-  image?: string; // optional photo; falls back to an initial
+  image: string;
+  alt?: string;
 }
 interface Props {
   eyebrow?: string;
   heading: string;
   subheading?: string;
-  wins: Win[];
+  items: Item[];
   /** surface/surface-2: the default neutral bands. brand/cream: the bold
    * primary/secondary experiment - card colour inverts against the section
-   * so it always reads (cream card on a green section, green card on a
-   * cream section). */
+   * so it always reads. */
   tone?: "surface" | "surface-2" | "brand" | "cream";
 }
 
@@ -26,11 +22,9 @@ const {
   eyebrow,
   heading,
   subheading,
-  wins,
+  items,
   tone = "surface-2",
 } = Astro.props;
-
-const initial = (name: string) => name.trim().charAt(0).toUpperCase();
 
 const isBrand = tone === "brand";
 const isCream = tone === "cream";
@@ -45,24 +39,10 @@ const subText = isBrand ? "text-white/75" : isCream ? "text-ink-fixed/70" : "tex
 const eyebrowText = isBrand ? "text-white/80" : "text-brand-600";
 
 // Card flips to the opposite brand colour so it always reads clearly.
-const cardBg =
-  isBrand ? "bg-secondary" : isCream ? "bg-brand-500" : "bg-card";
-const cardBorder =
-  isBrand ? "border-ink-fixed/10" : isCream ? "border-white/15" : "border-line";
-const cardLabel = isBrand ? "text-brand-700" : isCream ? "text-white/80" : "text-brand-600";
-const cardHeading = isBrand ? "text-ink-fixed" : isCream ? "text-white" : "text-ink";
-const cardBody = isBrand ? "text-ink-fixed/70" : isCream ? "text-white/80" : "text-ink-muted";
-// Full literal strings (not built via string interpolation) so Tailwind's
-// source scanner can actually find and generate these arbitrary-variant rules.
-const cardStrong =
-  isBrand ? "[&_strong]:text-ink-fixed"
-  : isCream ? "[&_strong]:text-white"
-  : "[&_strong]:text-ink";
-const cardName = isBrand ? "text-ink-fixed" : isCream ? "text-white" : "text-ink";
-const cardMeta = isBrand ? "text-ink-fixed/60" : isCream ? "text-white/60" : "text-ink-muted";
-const fallbackAvatar = isCream ? "bg-white text-brand-700" : "bg-chip text-chip-ink";
+const cardBg = isBrand ? "bg-secondary" : isCream ? "bg-brand-500" : "bg-card";
+const cardBorder = isBrand ? "border-ink-fixed/10" : isCream ? "border-white/15" : "border-line";
+const cardCaption = isBrand ? "text-ink-fixed" : isCream ? "text-white" : "text-ink";
 
-// Prev/next + dots sit on the section bg itself, not the card.
 const navBtn =
   isBrand ? "border-white/30 text-white/70 hover:bg-white/10 hover:text-white"
   : isCream ? "border-ink-fixed/20 text-ink-fixed/70 hover:bg-ink-fixed/5 hover:text-ink-fixed"
@@ -93,63 +73,44 @@ const dotActive = isBrand ? "bg-white" : "bg-brand-500";
       }
     </div>
 
-    <div class="relative mt-10" data-wins data-dot-active={dotActive} data-dot-idle={dotIdle}>
-      <!-- Slides stacked in one grid cell so the card sizes to the tallest win -->
-      <div class="grid">
+    <div class="relative mt-10" data-photos data-dot-active={dotActive} data-dot-idle={dotIdle}>
+      <!-- Slides stacked in one grid cell, centred and width-capped -->
+      <div class="mx-auto grid max-w-xs">
         {
-          wins.map((w, i) => (
-            <article
-              class={`col-start-1 row-start-1 rounded-card border ${cardBorder} ${cardBg} p-7 shadow-sm shadow-black/5 transition-all duration-500 ease-out sm:p-8 ${
+          items.map((item, i) => (
+            <figure
+              class={`col-start-1 row-start-1 overflow-hidden rounded-card border ${cardBorder} ${cardBg} shadow-sm shadow-black/5 transition-all duration-500 ease-out ${
                 i === 0
                   ? "opacity-100"
                   : "pointer-events-none translate-y-3 scale-[0.98] opacity-0"
               }`}
-              data-wins-slide
+              data-photos-slide
               data-index={i}
               aria-hidden={i === 0 ? "false" : "true"}
             >
-              <p class={`text-xs font-semibold uppercase tracking-[0.1em] ${cardLabel}`}>
-                Client win
-              </p>
-              <p class={`mt-3 font-display text-2xl font-bold leading-tight tracking-tight md:text-[1.75rem] ${cardHeading}`}>
-                {w.result}
-              </p>
-              <blockquote
-                class={`mt-4 text-base leading-relaxed ${cardBody} [&_strong]:font-semibold ${cardStrong}`}
-                set:html={`&#8220;${w.quote}&#8221;`}
+              <img
+                src={item.image}
+                alt={item.alt ?? `${item.name}'s transformation`}
+                width="800"
+                height="800"
+                class="aspect-square w-full object-contain"
+                loading={i === 0 ? "eager" : "lazy"}
               />
-              <div class={`mt-6 flex items-center gap-3 border-t ${cardBorder} pt-5`}>
-                {w.image ? (
-                  <img
-                    src={w.image}
-                    alt={w.name}
-                    width="44"
-                    height="44"
-                    class="h-11 w-11 shrink-0 rounded-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <span class={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-base font-bold ${fallbackAvatar}`}>
-                    {initial(w.name)}
-                  </span>
-                )}
-                <div class="min-w-0">
-                  <div class={`text-sm font-semibold ${cardName}`}>{w.name}</div>
-                  <div class={`text-xs ${cardMeta}`}>{w.meta}</div>
-                </div>
-              </div>
-            </article>
+              <figcaption class={`px-4 py-3 text-center text-sm font-semibold ${cardCaption}`}>
+                {item.name}
+              </figcaption>
+            </figure>
           ))
         }
       </div>
 
       {
-        wins.length > 1 && (
+        items.length > 1 && (
           <div class="mt-7 flex items-center justify-center gap-4">
             <button
               type="button"
-              data-wins-prev
-              aria-label="Previous win"
+              data-photos-prev
+              aria-label="Previous photo"
               class={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${navBtn}`}
             >
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -157,13 +118,13 @@ const dotActive = isBrand ? "bg-white" : "bg-brand-500";
               </svg>
             </button>
 
-            <div class="flex items-center gap-2" data-wins-dots>
-              {wins.map((_, i) => (
+            <div class="flex flex-wrap items-center justify-center gap-2" data-photos-dots>
+              {items.map((item, i) => (
                 <button
                   type="button"
-                  data-wins-dot
+                  data-photos-dot
                   data-index={i}
-                  aria-label={`Go to win ${i + 1}`}
+                  aria-label={`Go to ${item.name}`}
                   class={`h-2 w-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${dotIdle}`}
                 />
               ))}
@@ -171,8 +132,8 @@ const dotActive = isBrand ? "bg-white" : "bg-brand-500";
 
             <button
               type="button"
-              data-wins-next
-              aria-label="Next win"
+              data-photos-next
+              aria-label="Next photo"
               class={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${navBtn}`}
             >
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -189,17 +150,15 @@ const dotActive = isBrand ? "bg-white" : "bg-brand-500";
 <script>
   // Toggled at runtime; listed here so Tailwind keeps them in the build:
   // bg-brand-500 bg-white bg-secondary w-5 bg-line bg-white/30 bg-ink-fixed/20 w-2 opacity-100 opacity-0 translate-y-3 scale-[0.98] pointer-events-none
-  document.querySelectorAll<HTMLElement>("[data-wins]").forEach((root) => {
+  document.querySelectorAll<HTMLElement>("[data-photos]").forEach((root) => {
     const slides = Array.from(
-      root.querySelectorAll<HTMLElement>("[data-wins-slide]")
+      root.querySelectorAll<HTMLElement>("[data-photos-slide]")
     );
     const dots = Array.from(
-      root.querySelectorAll<HTMLElement>("[data-wins-dot]")
+      root.querySelectorAll<HTMLElement>("[data-photos-dot]")
     );
     if (slides.length < 2) return;
 
-    // Tone-aware dot colours, set as data attributes by the Astro component
-    // so the same script works whichever section tone this instance uses.
     const dotActiveClass = root.dataset.dotActive || "bg-brand-500";
     const dotIdleClass = root.dataset.dotIdle || "bg-line";
 
@@ -238,17 +197,17 @@ const dotActive = isBrand ? "bg-white" : "bg-brand-500";
     const start = () => {
       if (reduce) return;
       stop();
-      timer = window.setInterval(next, 5500);
+      timer = window.setInterval(next, 3500);
     };
 
     root
-      .querySelector("[data-wins-next]")
+      .querySelector("[data-photos-next]")
       ?.addEventListener("click", () => {
         show(current + 1);
         start();
       });
     root
-      .querySelector("[data-wins-prev]")
+      .querySelector("[data-photos-prev]")
       ?.addEventListener("click", () => {
         show(current - 1);
         start();

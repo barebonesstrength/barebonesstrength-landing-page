@@ -7,15 +7,27 @@ interface Stat {
 
 interface Props {
   stats: Stat[];
-  /** Dark band (inverted) vs light. Default dark, like most offer pages. */
-  tone?: "dark" | "light";
+  /** Dark band (inverted) vs light vs the brand-green band. Default dark,
+   * like most offer pages. */
+  tone?: "dark" | "light" | "brand";
 }
 
 const { stats, tone = "dark" } = Astro.props;
-const isDark = tone === "dark";
+const sectionClass =
+  tone === "brand"
+    ? "bg-brand-500 text-white"
+    : tone === "dark"
+      ? "bg-surface-dark text-ink-dark"
+      : "bg-surface-2 text-ink";
+const labelClass =
+  tone === "brand"
+    ? "text-white/70"
+    : tone === "dark"
+      ? "text-ink-dark/60"
+      : "text-ink-muted";
 ---
 
-<section class={isDark ? "bg-surface-dark text-ink-dark" : "bg-surface-2 text-ink"}>
+<section class={sectionClass}>
   <div class="mx-auto max-w-6xl px-6 py-10">
     <div class="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
       {
@@ -24,11 +36,7 @@ const isDark = tone === "dark";
             <div class="text-3xl font-extrabold tracking-tight md:text-4xl">
               {s.value}
             </div>
-            <div
-              class={`mt-1 text-xs font-medium uppercase tracking-wide ${
-                isDark ? "text-ink-dark/60" : "text-ink-muted"
-              }`}
-            >
+            <div class={`mt-1 text-xs font-medium uppercase tracking-wide ${labelClass}`}>
               {s.label}
             </div>
           </div>

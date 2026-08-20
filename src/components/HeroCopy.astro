@@ -15,6 +15,10 @@ interface Props {
   secondaryLabel?: string;
   secondaryHref?: string;
   trustLabel?: string;
+  /** Trust-row avatar photos. Falls back to placeholders if not supplied. */
+  avatars?: string[];
+  /** cream: the primary/secondary colour experiment. Default neutral. */
+  tone?: "surface" | "cream";
 }
 
 const {
@@ -28,22 +32,22 @@ const {
   secondaryLabel,
   secondaryHref,
   trustLabel,
+  avatars = [1, 2, 3, 4, 5, 6].map((n) => `https://i.pravatar.cc/64?img=${n * 11}`),
+  tone = "surface",
 } = Astro.props;
 
 const isCenter = align === "center";
 const hasMedia = Astro.slots.has("media");
+const isCream = tone === "cream";
 
-// Placeholder avatar stack for the trust row (students swap for real ones).
-const avatars = [1, 2, 3, 4, 5, 6].map(
-  (n) => `https://i.pravatar.cc/64?img=${n * 11}`
-);
-
-const headlineColor = "text-ink";
-const subColor = "text-ink-muted";
-const bulletColor = "text-ink";
-const eyebrowLook = "border-ink/15 text-ink";
-const trustColor = "text-ink-muted";
-const avatarBorder = "border-surface";
+const headlineColor = isCream ? "text-ink-fixed" : "text-ink";
+const subColor = isCream ? "text-ink-fixed/70" : "text-ink-muted";
+const bulletColor = isCream ? "text-ink-fixed" : "text-ink";
+const eyebrowLook = isCream ? "border-ink-fixed/20 text-ink-fixed" : "border-ink/15 text-ink";
+const trustColor = isCream ? "text-ink-fixed/70" : "text-ink-muted";
+// Matches the hero's own background so overlapping avatars keep their clean
+// cutout ring, on the neutral page bg or the cream band alike.
+const avatarBorder = isCream ? "border-secondary" : "border-surface";
 ---
 
 <div class={isCenter ? "flex flex-col items-center text-center" : ""}>
